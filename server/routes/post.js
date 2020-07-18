@@ -4,7 +4,7 @@ const router = express.Router();
 const Post = mongoose.model('Post');
 const requireLogin = require('../middleware/requireLogin');
 
-router.get('/allpost', async (req, res) => {
+router.get('/allpost', requireLogin, async (req, res) => {
   try {
     const posts = await Post.find().populate('postedBy', '_id name');
     res.json({ posts });
@@ -27,8 +27,9 @@ router.get('/mypost', requireLogin, async (req, res) => {
 
 router.post('/createpost', requireLogin, async (req, res) => {
   try {
-    const { title, body } = req.body;
-    if (!title || !body) {
+    const { title, body, pic } = req.body;
+
+    if (!title || !body || !pic) {
       return res.status(422).send({ error: 'Please add all the fields' });
     }
 
@@ -36,6 +37,7 @@ router.post('/createpost', requireLogin, async (req, res) => {
     const post = new Post({
       title,
       body,
+      photo: pic,
       postedBy: req.user,
     });
 
