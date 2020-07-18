@@ -25,7 +25,7 @@ router.get('/mypost', requireLogin, async (req, res) => {
     console.log('Error fetching My posts');
   }
 });
-
+ 
 router.post('/createpost', requireLogin, async (req, res) => {
   try {
     const { title, body, pic } = req.body;
@@ -58,7 +58,10 @@ router.put('/like', requireLogin, async (req, res) => {
     {
       new: true,
     }
-  ).exec((err, result) => {
+  )
+  .populate('comments.postedBy','_id name')
+  .populate('postedBy','_id name')
+  .exec((err, result) => {
     if (err) {
       return res.status(422).json({ error: err });
     } else {
@@ -76,7 +79,10 @@ router.put('/unlike', requireLogin, async (req, res) => {
     {
       new: true,
     }
-  ).exec((err, result) => {
+  )
+  .populate('comments.postedBy','_id name')
+  .populate('postedBy','_id name')
+  .exec((err, result) => {
     if (err) {
       return res.status(422).json({ error: err });
     } else {

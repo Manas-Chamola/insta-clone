@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../App';
+import {Link} from 'react-router-dom'
 
 const Home = () => {
   const [data, setData] = useState([]);
@@ -12,6 +13,7 @@ const Home = () => {
     })
       .then((res) => res.json())
       .then((result) => {
+        console.log('On loading....',result);
         setData(result.posts);
       });
   }, []);
@@ -36,11 +38,12 @@ const Home = () => {
             return item;
           }
         });
+        console.log('After Liking....',result);
         setData(newData);
       })
       .catch((err) => console.log(err));
   };
-
+ 
   const unlikePost = (id) => {
     fetch('/unlike', {
       method: 'put',
@@ -61,6 +64,7 @@ const Home = () => {
             return item;
           }
         });
+        console.log('After Unliking....',result);
         setData(newData);
       })
       .catch((err) => console.log(err));
@@ -87,6 +91,7 @@ const Home = () => {
           return item;
         }
       });
+      console.log('After commenting....',result);
       setData(newData);
     })
     .catch((err) => console.log(err));
@@ -101,20 +106,20 @@ const Home = () => {
     })
     .then(res=>res.json())
     .then(result=> {
-      console.log(result);
+      console.log('After post deleting....',result);
       const newData = data.filter(item=> {
         return item._id!== result._id
       })
       setData(newData);
     })
   }
-
+ 
   return (
     <div className="home">
       {data.map((item) => {
         return (
           <div className="card home-card" key={item._id}>
-            <h5>{item.postedBy.name} {item.postedBy._id===state._id
+            <h5> <Link to={item.postedBy._id!==state._id ? `/profile/${item.postedBy._id}`: '/profile'}>{item.postedBy.name} </Link>{item.postedBy._id===state._id
             &&
             <i
             className="material-icons"

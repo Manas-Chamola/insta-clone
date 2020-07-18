@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
 import Profile from './components/Profile';
+import UserProfile from './components/UserProfile';
 import Signup from './components/Signup';
 import CreatePost from './components/CreatePost';
 import { reducer, initialState } from './reducers/userReducer';
@@ -24,6 +25,7 @@ const Routing = () => {
   }, []);
   return (
     <Switch>
+      <Route path="/profile/:userId" exact component={UserProfile}></Route>
       <Route path="/signin" component={Login}></Route>
       <Route path="/profile" component={Profile}></Route>
       <Route path="/signup" component={Signup}></Route>
