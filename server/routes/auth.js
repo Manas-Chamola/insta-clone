@@ -50,13 +50,15 @@ router.post('/signin', async (req, res) => {
     const doMatch = await bcrypt.compare(password, savedUser.password);
     if (doMatch) {
       const token = jwt.sign({ _id: savedUser._id }, JWT_Secret);
-      const { _id, name, email } = savedUser;
+      const { _id, name, email, followers, following } = savedUser;
       res.json({
         token,
         user: {
           _id,
           name,
           email,
+          followers, 
+          following
         },
       });
     } else {

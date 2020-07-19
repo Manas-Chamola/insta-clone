@@ -13,6 +13,15 @@ router.get('/allpost', requireLogin, async (req, res) => {
   }
 });
 
+router.get('/getsubpost', requireLogin, async (req, res) => {
+  try {
+    const posts = await Post.find({postedBy: {$in: req.user.following}}).populate('postedBy', '_id name').populate('comments.postedBy','_id name');
+    res.json({ posts });
+  } catch (err) {
+    console.log('Error fetching posts');
+  }
+});
+
 router.get('/mypost', requireLogin, async (req, res) => {
   try {
     const myPost = await Post.find({ postedBy: req.user._id }).populate(
