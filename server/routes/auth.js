@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { JWT_Secret } = require('../keys');
+const { JWT_Secret } = require('../config/keys');
 const User = mongoose.model('User');
 
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, pic } = req.body;
     if (!email || !password || !name) {
       return res.status(422).json({ error: 'Please add all the fields' });
     }
@@ -23,6 +23,7 @@ router.post('/signup', async (req, res) => {
       email,
       password: hashedPassword,
       name,
+      pic
     });
 
     await user.save();
@@ -50,7 +51,7 @@ router.post('/signin', async (req, res) => {
     const doMatch = await bcrypt.compare(password, savedUser.password);
     if (doMatch) {
       const token = jwt.sign({ _id: savedUser._id }, JWT_Secret);
-      const { _id, name, email, followers, following } = savedUser;
+      const { _id, name, email, followers, following, pic } = savedUser;
       res.json({
         token,
         user: {
@@ -58,7 +59,8 @@ router.post('/signin', async (req, res) => {
           name,
           email,
           followers, 
-          following
+          following,
+          pic
         },
       });
     } else {
