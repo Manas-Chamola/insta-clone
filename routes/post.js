@@ -6,7 +6,7 @@ const requireLogin = require('../middleware/requireLogin');
 
 router.get('/allpost', requireLogin, async (req, res) => {
   try {
-    const posts = await Post.find().populate('postedBy', '_id name').populate('comments.postedBy','_id name');
+    const posts = await Post.find().populate('postedBy', '_id name').populate('comments.postedBy','_id name').sort('-createdAt');
     res.json({ posts });
   } catch (err) {
     console.log('Error fetching posts');
@@ -15,7 +15,7 @@ router.get('/allpost', requireLogin, async (req, res) => {
 
 router.get('/getsubpost', requireLogin, async (req, res) => {
   try {
-    const posts = await Post.find({postedBy: {$in: req.user.following}}).populate('postedBy', '_id name').populate('comments.postedBy','_id name');
+    const posts = await Post.find({postedBy: {$in: req.user.following}}).populate('postedBy', '_id name').populate('comments.postedBy','_id name').sort('-createdAt');
     res.json({ posts });
   } catch (err) {
     console.log('Error fetching posts');
@@ -58,7 +58,7 @@ router.post('/createpost', requireLogin, async (req, res) => {
   }
 });
 
-router.put('/like', requireLogin, async (req, res) => {
+router.put('/like', requireLogin, (req, res) => {
   Post.findByIdAndUpdate(
     req.body.postId,
     {
@@ -79,7 +79,7 @@ router.put('/like', requireLogin, async (req, res) => {
   });
 });
 
-router.put('/unlike', requireLogin, async (req, res) => {
+router.put('/unlike', requireLogin, (req, res) => {
   Post.findByIdAndUpdate(
     req.body.postId,
     {
@@ -100,7 +100,7 @@ router.put('/unlike', requireLogin, async (req, res) => {
   });
 });
 
-router.put('/comment', requireLogin, async (req, res) => {
+router.put('/comment', requireLogin, (req, res) => {
   const comment = {
     text: req.body.text,
     postedBy: req.user._id
@@ -125,7 +125,7 @@ router.put('/comment', requireLogin, async (req, res) => {
   });
 });
 
-router.delete('/deletepost/:postId', requireLogin, async (req, res) => {
+router.delete('/deletepost/:postId', requireLogin, (req, res) => {
   Post.findOne({_id: req.params.postId})
   .populate('postedBy','_id')
   .exec((err,post) => {
