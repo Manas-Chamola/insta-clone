@@ -6,7 +6,7 @@ const requireLogin = require('../middleware/requireLogin');
 
 router.get('/allpost', requireLogin, async (req, res) => {
   try {
-    const posts = await Post.find().populate('postedBy', '_id name').populate('comments.postedBy','_id name');
+    const posts = await Post.find().populate('postedBy', '_id name').populate('comments.postedBy','_id name').sort('-createdAt');
     res.json({ posts });
   } catch (err) {
     console.log('Error fetching posts');
@@ -15,7 +15,7 @@ router.get('/allpost', requireLogin, async (req, res) => {
 
 router.get('/getsubpost', requireLogin, async (req, res) => {
   try {
-    const posts = await Post.find({postedBy: {$in: req.user.following}}).populate('postedBy', '_id name').populate('comments.postedBy','_id name');
+    const posts = await Post.find({postedBy: {$in: req.user.following}}).populate('postedBy', '_id name').populate('comments.postedBy','_id name').sort('-createdAt');
     res.json({ posts });
   } catch (err) {
     console.log('Error fetching posts');
