@@ -74,6 +74,17 @@ router.put('/updatepic', requireLogin, (req, res) => {
             }
             res.json(result)
         })
-})
+});
+
+router.post('/search-users', async (req, res) => {
+    try {
+        const userPattern = new RegExp('^'+ req.body.query);
+        const user = await User.find({email: {$regex: userPattern}});
+        res.json({user});
+    } catch (err) {
+        console.log(err);
+    }
+});
+ 
  
 module.exports = router;

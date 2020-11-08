@@ -55,3 +55,7 @@ h2 {
 .material-icons:hover {
   cursor: pointer;
 }
+
+.collection-item {
+  width: 75%;
+}

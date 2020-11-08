@@ -6,14 +6,12 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
-const { JWT_Secret } = require('../config/keys');
+const { JWT_Secret, SENDGRID_API, EMAIL } = require('../config/keys');
 const User = mongoose.model('User');
-
-//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
 
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
-    api_key: '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'
+    api_key: SENDGRID_API
   }
 }));
 
@@ -107,7 +105,7 @@ router.post('/reset-password', (req, res) => {
       from:'chamolamanas19@gmail.com',
       subject: 'Password reset',
       html:`<p>You requested for password reset!!!</p>
-            <h5>Click on this <a href="http://localhost:3000/reset/${token}"> link </a> to reset password</h5>`
+            <h5>Click on this <a href="${EMAIL}/reset/${token}"> link </a> to reset password</h5>`
     });
     res.json({message: 'Check your email'});
   })
@@ -122,7 +120,7 @@ try{
     resetToken: sentToken,
     expireToken:{$gt: Date.now()}
   });
-
+  
   if(!user){
     return res.status(422).json({ error: 'Try again! session expired' });
   }
